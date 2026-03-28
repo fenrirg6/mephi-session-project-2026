@@ -1,0 +1,182 @@
+    1  ip link show # 1.1 - вывод имени сетевого интерфейса
+    2  nmcli con show # определение имени активного соединения + настройка
+    3  sudo nmcli con mod "Beeline_2G_F16319-2.4G" ipv4.method manual ipv4.addresses 192.168.1.100/24 ipv4.gateway 192.168.1.1 ipv4.dns 8.8.8.8 connection.autoconnect yes
+    4  sudo nmcli con down "Beeline_2G_F16319-2.4G" && sudo nmcli con up "Beeline_2G_F16319-2.4G" # перезапуск
+    5  ip addr show # проверка
+    6  ip route show # проверка
+    7  sudo hostnamectl set-hostname mephi-2026.domain.local # установка имени хоста
+    8  hostnamectl status # проверка
+    9  ip route show | grep default # 1.2 - проверка маршрута по умолчанию
+   10  ping -c 4 8.8.8.8 > /tmp/network_check.txt
+   11  ping -c 4 192.168.1.1 >> /tmp/network_check.txt
+   12  cat /tmp/network_check.txt
+   13  sudo apt install -y nginx tcpdump libcap-ng-utils # 2.1 - установка пакетов (apt, т.к дистрибутив ubuntu)
+   14  nginx -v
+   15  tcpdump --version
+   16  cd /tmp # 2.2 - установка локального rpm-пакета
+   17  sudo apt download tcpdump
+   18  ls /var/cache/apt/archives/tcpdump*.deb # загрузка падает по cannot resolve host
+   19  cd ..
+   20  echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf # фикс dns для исправления ошибки
+   21  ping -c 2 apt.pop-os.org
+   22  cd /tmp
+   23  sudo apt download tcpdump
+   24  ls tcpdump*.deb # успешно загрузилось, проверка
+   25  sudo dpkg -i tcpdump_4.99.1-3ubuntu0.2_amd64.deb
+   26  dpkg -l tcpdump
+   27  cd .. # 3.1 - создание и монтирование фс
+   28  lsblk
+   29  sudo parted /dev/sdb --script mklabel gpt mkpart primary ext4 0% 100%
+   30  ls # Не удаётся получить статус устройства /dev/sdb
+   31  cd dev
+   32  ls
+   33  sudo dd if=/dev/zero of=/var/disk2.img bs=1M count=1024 # эмуляция диска через loop устр
+   34  sudo losetup /dev/loop10 /var/disk2.img
+   35  lsblk | grep loop10
+   36  cd ..
+   37  sudo parted /dev/loop10 --script mklabel gpt mkpart primary ext4 0% 100%
+   38  sudo partprobe /dev/loop10
+   39  lsblk /dev/loop10
+   40  sudo mkfs.ext4 -L MEPHI_DATA /dev/loop10p1 # форматирование в ext4
+   41  sudo mkdir -p /data/mephi-web
+   42  sudo mount /dev/loop10p1 /data/mephi-web # монтирование
+   43  df -h /data/mephi-web
+   44  sudo nano /etc/systemd/system/loop-disk2.service
+   45  sudo systemctl enable loop-disk2.service
+   46  echo 'LABEL=MEPHI_DATA /data/mephi-web ext4 defaults 0 2' | sudo tee -a /etc/fstab
+   47  sudo mount -a
+   48  df -h /data/mephi-web
+   49  lsblk
+   50  #3.2 управление сервисами и журналирование
+   51  sudo systemctl enable --now nginx
+   52  sudo systemctl status nginx
+   53  sudo journalctl -u nginx --since "5 minutes ago" > /tmp/nginx_recent_logs.txt
+   54  cat /tmp/nginx_recent_logs.txt
+   55  sudo nmcli con mod "Beeline_2G_F16319-2.4G" ipv4.method manual ipv4.addresses 192.168.1.100/24 ipv4.gateway 192.168.1.1 ipv4.dns 8.8.8.8 connection.autoconnect yes
+   56  sudo nmcli con down "Beeline_2G_F16319-2.4G" && sudo nmcli con up "Beeline_2G_F16319-2.4G"
+   57  # Раздел 4
+   58  # 4.1 DAC
+   59  sudo useradd mephi-admin #создание пользователя с паролем
+   60  sudo "mephi-admin:P@ssw0rd2026" | sudo chpasswd
+   61  echo "mephi-admin:P@ssw0rd2026" | sudo chpasswd
+   62  sudo groupadd mephi-devs #создание группы
+   63  sudo usermod -aG mephi-devs mephi-admin #добавление пользователя в группу
+   64  sudo chown mephi-admin:mephi-devs /data/mephi-web # смена владельца директории
+   65  sudo chmod 2775 /data/mephi-web # установка прав 2775 (setgid - наследование групп)
+   66  # проверка
+   67  ls -ld /data/mephi-web
+   68  id mephi-admin
+   69  getenforce
+   70  sudo aa-status
+   71  # 4.2 MAC и Capabilities - используется AppArmor вместо SELinux, тк на дистрибутиве Pop!_OS по умолчанию он
+   72  sudo systemctl is-enabled apparmor
+   73  sudo systemctl status apparmor
+   74  sudo apt install -y apparmor-utils # установка apparmor профиля
+   75  sudo cat /etc/apparmor.d/usr.sbin.nginx
+   76  sudo nano /etc/apparmor.d/local/usr.sbin.nginx
+   77  sudo apparmor_parser -r /etc/apparmor.d/usr.sbin/nginx
+   78  sudo apt install -y apparmor-utils
+   79  sudo aa-autodep nginx
+   80  ls /etc/apparmor.d/usr.sbin.nginx
+   81  sudo nano /etc/apparmor.d/usr.sbin.nginx # конфигурация профиля с доступом к mephi web
+   82  sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.nginx
+   83  sudo aa-enforce /usr/sbin/nginx # установка enforce
+   84  sudo systemctl restart nginx
+   85  sudo aa-status | grep nginx
+   86  curl http://localhost
+   87  sudo chmod -s /usr/sbin/tcpdump
+   88  sudo chmod -s /usr/bin/tcpdump
+   89  sudo setcap cap_net_raw,cap_net_admin+ep /usr/bin/tcpdump
+   90  getcap /usr/bin/tcpdump
+   91  sudo -u mephi-admin tcpdump --help
+   92  echo "root" | sudo tee/etc/ssh/denied_users # 5.1 ограничение входа для root
+   93  echo "root" | sudo tee etc/ssh/denied_users
+   94  sudo bash -c 'cat >> /etc/pam.d/login << EOF
+auth required pam_listfile.so onerr=succeed item=user sense=deny file=/etc/ssh/denied_users
+EOF'
+   95  sudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+   96  sudo apt install -y openssh-server # установка, тк на pop_os не установлен по умолчанию
+   97  ls /etc/ssh/sshd_config
+   98  sudo sed -i 's/^#*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config # запрет входа по ssh
+   99  grep -q "^PermitRootLogin" /etc/ssh/sshd_config ||   echo "PermitRootLogin no" | sudo tee -a /etc/ssh/sshd_config
+  100  sudo systemctl enable --now ssh # включение автозапуска
+  101  sudo systemctl restart ssh # рестрат для применения конфига
+  102  sshd -T | grep permitrootlogin
+  103  sudo ssh-keygen -A # генерация ключей хоста
+  104  ls /etc/ssh/ssh_host_*
+  105  sudo systemctl restart ssh
+  106  sshd -T | grep permitrootlogin
+  107  sudo sshd -T | grep permitrootlogin
+  108  # 5.2 проверка результатов
+  109  sudo bash -c 'cat > /etc/nginx/conf.d/mephi-web.conf << EOF
+server {
+  110  sudo bash -c 'cat > /etc/nginx/conf.d/mephi-web.conf << EOF
+server {listen 80; server_name _; root data/mephi-web; index index.html; } EOF'
+  111  sudo bash -c 'cat > /etc/nginx/conf.d/mephi-web.conf << EOF
+server {
+    listen 80;
+    server_name _;
+    root /data/mephi-web;
+    index index.html;
+}
+EOF'
+  112  sudo sed -i 's|root\s*/usr/share/nginx/html|root /data/mephi-web|' /etc/nginx/nginx.conf
+  113  sudo -u mephi-admin bash -c 'echo "Hello from Student: 12345" > /data/mephi-web/index.html' # тест html
+  114  sudo systemctl restart nginx 
+  115  sudo journalctl -xeu nginx.service | tail -30 # падает с ошибкой
+  116  sudo nano /etc/apparmor.d/usr.sbin.nginx # корректировка конфига
+  117  sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.nginx
+  118  sudo nginx -t
+  119  sudo nano /etc/apparmor.d/usr.sbin.nginx
+  120  sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.nginx
+  121  sudo nano /etc/apparmor.d/usr.sbin.nginx
+  122  sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.nginx
+  123  sudo nginx -t
+  124  sudo systemctl restart nginx
+  125  sudo systemctl status nginx
+  126  sudo aa-status | grep nginx
+  127  sudo restorecon -Rv /data/mephi-web
+  128  curl http://localhost
+  129  sudo sed -i 's|root\s*/usr/share/nginx/html|root /data/mephi-web|' /etc/nginx/nginx.conf
+  130  sudo -u mephi-admin bash -c 'echo "Hello from Student: 12345" > /data/mephi-web/index.html'
+  131  sudo systemctl restart nginx
+  132  curl http://localhost
+  133  sudo aa-complain /usr/sbin/nginx
+  134  curl http://localhost
+  135  sudo dmesg | grep -i apparmor | tail -20
+  136  curl http://192.168.1.100 # отдает дефолтную страницу
+  137  curl http://localhost
+  138  sudo nano /etc/apparmor.d/usr.sbin.nginx
+  139  sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.nginx
+  140  sudo aa-enforce /usr/sbin/nginx
+  141  sudo systemctl restart nginx
+  142  sudo rm -f /etc/nginx/sites-enabled/default # отключение дефолтной страницы
+  143  cat /etc/nginx/conf.d/mephi-web.conf
+  144  sudo bash -c 'cat > /etc/nginx/conf.d/mephi-web.conf << EOF
+server {
+    listen 80 default_server;
+    server_name _;
+    root /data/mephi-web;
+    index index.html;
+}
+EOF'
+  145  cat /etc/nginx/conf.d/mephi-web.conf
+  146  sudo nginx -t # проверка синтаксиса
+  147  sudo systemctl restart nginx
+  148  curl http://localhost
+  149  sudo -u mephi-admin bash -c 'echo "Hello from Student: M255972" > /data/mephi-web/index.html' # установка
+  150  curl http://localhost
+  151  sudo ufw status # конфликт порта 80
+  152  sudo ufw allow 80/tcp
+  153  sudo ufw allow http
+  154  sudo ufw enable
+  155  p addr show
+  156  ip addr show
+  157  curl http://192.168.1.100
+  158  nmcli con show
+  159  sudo nmcli con mod "Beeline_5G_F16319-2.4G"   ipv4.method manual   ipv4.addresses 192.168.1.100/24   ipv4.gateway 192.168.1.1   ipv4.dns 8.8.8.8   connection.autoconnect yes
+  160  sudo nmcli con mod "Beeline_2G_F16319-2.4G"   ipv4.method manual   ipv4.addresses 192.168.1.100/24   ipv4.gateway 192.168.1.1   ipv4.dns 8.8.8.8   connection.autoconnect yes
+  161  sudo nmcli con down "Beeline_2G_F16319-2.4G" && sudo nmcli con up "Beeline_2G_F16319-2.4G"
+  162  curl http://192.168.1.100
+  163  history
+  164  history > ~/project_history.txt

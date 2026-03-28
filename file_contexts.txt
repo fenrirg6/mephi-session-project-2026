@@ -1,0 +1,70 @@
+   /usr/sbin/nginx
+   /{,usr/}sbin/dhclient
+   libreoffice-senddoc
+   libreoffice-soffice//gpg
+   libreoffice-xpdfimport
+   lsb_release
+--
+   /usr/sbin/nginx (18679) 
+   /usr/sbin/nginx (18680) 
+   /usr/sbin/nginx (18681) 
+   /usr/sbin/nginx (18682) 
+   /usr/sbin/nginx (18683) 
+   /usr/sbin/nginx (18684) 
+   /usr/sbin/nginx (18685) 
+   /usr/sbin/nginx (18686) 
+   /usr/sbin/nginx (18687) 
+0 processes are in complain mode.
+0 processes are unconfined but have a profile defined.
+0 processes are in mixed mode.
+0 processes are in kill mode.
+#include <tunables/global>
+
+/usr/sbin/nginx {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  capability net_bind_service,
+  capability setuid,
+  capability setgid,
+  capability dac_override,
+
+  # бинарник nginx
+  /usr/sbin/nginx mr,
+  /usr/lib/nginx/modules/** mr,
+
+  # конфигурация
+  /etc/nginx/ r,
+  /etc/nginx/** r,
+  /etc/nginx/modules-enabled/ r,
+  /usr/share/nginx/modules-available/** r,
+  /usr/lib/nginx/modules/** mr,
+
+  # логи
+  /var/log/nginx/** rw,
+
+  # PID и временные файлы
+  /run/nginx.pid rw,
+  /var/lib/nginx/tmp/** rw,
+  /var/cache/nginx/** rw,
+  
+  # для исключения denied путей
+  /etc/ssl/openssl.cnf r,
+  /usr/share/nginx/modules-available/ r,
+  /usr/share/nginx/modules-available/** r,
+
+  # корневая директория
+  /var/www/** r,
+
+  # директория задания
+  /data/mephi-web/ r,
+  /data/mephi-web/** r,
+
+  # сеть
+  network inet stream,
+  network inet6 stream,
+
+  # локальные переопределения
+  #include <local/usr.sbin.nginx>
+}
+

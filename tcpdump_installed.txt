@@ -1,0 +1,31 @@
+Желаемый=неизвестно[u]/установить[i]/удалить[r]/вычистить[p]/зафиксировать[h]
+| Состояние=не[n]/установлен[i]/настроен[c]/распакован[U]/частично настроен[F]/
+            частично установлен[H]/trig-aWait/Trig-pend
+|/ Ошибка?=(нет)/требуется переустановка[R] (верхний регистр
+в полях состояния и ошибки указывает на ненормальную ситуацию)
+||/ Имя            Версия            Архитектура  Описание
++++-==============-=================-============-=====================================
+ii  tcpdump        4.99.1-3ubuntu0.2 amd64        command-line network traffic analyzer
+/.
+/etc
+/etc/apparmor.d
+/etc/apparmor.d/usr.bin.tcpdump
+/usr
+/usr/bin
+/usr/bin/tcpdump
+/usr/share
+/usr/share/doc
+/usr/share/doc/tcpdump
+/usr/share/doc/tcpdump/NEWS.Debian.gz
+/usr/share/doc/tcpdump/README.Debian
+/usr/share/doc/tcpdump/README.md.gz
+/usr/share/doc/tcpdump/changelog.Debian.gz
+/usr/share/doc/tcpdump/copyright
+/usr/share/doc/tcpdump/examples
+/usr/share/doc/tcpdump/examples/atime.awk
+/usr/share/doc/tcpdump/examples/packetdat.awk
+/usr/share/doc/tcpdump/examples/send-ack.awk
+/usr/share/doc/tcpdump/examples/stime.awk
+/usr/share/man
+/usr/share/man/man8
+/usr/share/man/man8/tcpdump.8.gz

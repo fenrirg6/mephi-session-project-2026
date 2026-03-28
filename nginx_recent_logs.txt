@@ -1,0 +1,23 @@
+мар 28 14:03:09 mephi-2026.domain.local systemd[1]: Starting A high performance web server and a reverse proxy server...
+мар 28 14:03:09 mephi-2026.domain.local nginx[16051]: nginx: [warn] conflicting server name "_" on 0.0.0.0:80, ignored
+мар 28 14:03:09 mephi-2026.domain.local nginx[16052]: nginx: [warn] conflicting server name "_" on 0.0.0.0:80, ignored
+мар 28 14:03:09 mephi-2026.domain.local systemd[1]: Started A high performance web server and a reverse proxy server.
+мар 28 14:15:36 mephi-2026.domain.local systemd[1]: Stopping A high performance web server and a reverse proxy server...
+мар 28 14:15:36 mephi-2026.domain.local systemd[1]: nginx.service: Deactivated successfully.
+мар 28 14:15:36 mephi-2026.domain.local systemd[1]: Stopped A high performance web server and a reverse proxy server.
+мар 28 14:15:36 mephi-2026.domain.local systemd[1]: Starting A high performance web server and a reverse proxy server...
+мар 28 14:15:36 mephi-2026.domain.local nginx[17142]: nginx: [warn] conflicting server name "_" on 0.0.0.0:80, ignored
+мар 28 14:15:36 mephi-2026.domain.local nginx[17144]: nginx: [warn] conflicting server name "_" on 0.0.0.0:80, ignored
+мар 28 14:15:36 mephi-2026.domain.local systemd[1]: Started A high performance web server and a reverse proxy server.
+мар 28 14:27:40 mephi-2026.domain.local systemd[1]: Stopping A high performance web server and a reverse proxy server...
+мар 28 14:27:40 mephi-2026.domain.local systemd[1]: nginx.service: Deactivated successfully.
+мар 28 14:27:40 mephi-2026.domain.local systemd[1]: Stopped A high performance web server and a reverse proxy server.
+мар 28 14:27:40 mephi-2026.domain.local systemd[1]: Starting A high performance web server and a reverse proxy server...
+мар 28 14:27:40 mephi-2026.domain.local nginx[18557]: nginx: [warn] conflicting server name "_" on 0.0.0.0:80, ignored
+мар 28 14:27:40 mephi-2026.domain.local nginx[18559]: nginx: [warn] conflicting server name "_" on 0.0.0.0:80, ignored
+мар 28 14:27:40 mephi-2026.domain.local systemd[1]: Started A high performance web server and a reverse proxy server.
+мар 28 14:28:59 mephi-2026.domain.local systemd[1]: Stopping A high performance web server and a reverse proxy server...
+мар 28 14:28:59 mephi-2026.domain.local systemd[1]: nginx.service: Deactivated successfully.
+мар 28 14:28:59 mephi-2026.domain.local systemd[1]: Stopped A high performance web server and a reverse proxy server.
+мар 28 14:28:59 mephi-2026.domain.local systemd[1]: Starting A high performance web server and a reverse proxy server...
+мар 28 14:28:59 mephi-2026.domain.local systemd[1]: Started A high performance web server and a reverse proxy server.

@@ -1,0 +1,53 @@
+apparmor module is loaded.
+28 profiles are loaded.
+26 profiles are in enforce mode.
+   /usr/bin/evince
+   /usr/bin/evince-previewer
+   /usr/bin/evince-previewer//sanitized_helper
+   /usr/bin/evince-thumbnailer
+   /usr/bin/evince//sanitized_helper
+   /usr/bin/evince//snap_browsers
+   /usr/bin/man
+   /usr/lib/NetworkManager/nm-dhcp-client.action
+   /usr/lib/NetworkManager/nm-dhcp-helper
+   /usr/lib/connman/scripts/dhclient-script
+   /usr/lib/cups/backend/cups-pdf
+   /usr/sbin/chronyd
+   /usr/sbin/cups-browsed
+   /usr/sbin/cupsd
+   /usr/sbin/cupsd//third_party
+   /usr/sbin/nginx
+   /{,usr/}sbin/dhclient
+   libreoffice-senddoc
+   libreoffice-soffice//gpg
+   libreoffice-xpdfimport
+   lsb_release
+   man_filter
+   man_groff
+   nvidia_modprobe
+   nvidia_modprobe//kmod
+   tcpdump
+2 profiles are in complain mode.
+   libreoffice-oosplash
+   libreoffice-soffice
+0 profiles are in kill mode.
+0 profiles are in unconfined mode.
+13 processes have profiles defined.
+13 processes are in enforce mode.
+   /usr/sbin/chronyd (763) 
+   /usr/sbin/chronyd (764) 
+   /usr/sbin/cups-browsed (1235) 
+   /usr/sbin/cupsd (719) 
+   /usr/sbin/nginx (18679) 
+   /usr/sbin/nginx (18680) 
+   /usr/sbin/nginx (18681) 
+   /usr/sbin/nginx (18682) 
+   /usr/sbin/nginx (18683) 
+   /usr/sbin/nginx (18684) 
+   /usr/sbin/nginx (18685) 
+   /usr/sbin/nginx (18686) 
+   /usr/sbin/nginx (18687) 
+0 processes are in complain mode.
+0 processes are unconfined but have a profile defined.
+0 processes are in mixed mode.
+0 processes are in kill mode.
